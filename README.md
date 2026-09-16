@@ -49,7 +49,7 @@ El proyecto está diseñado pensando en la escalabilidad y el código limpio:
 
 ## Cómo ejecutar
 
-1. [Clonar el repositorio]().
+1. Clonar el repositorio: https://github.com/MNEscobar/EscobarMatias_ActividadPractica_AppMovil_ll.git
 2. Abrir `EscobarMatias_ActividadPractica_AppMovil_II.sln` en Visual Studio 2022.
 3. Restaurar los paquetes NuGet.
 4. Seleccionar la plataforma de destino (Android, Windows, etc.) y ejecutar.
