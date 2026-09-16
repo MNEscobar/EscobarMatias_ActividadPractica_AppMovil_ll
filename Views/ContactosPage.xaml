@@ -1,12 +1,79 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:EscobarMatias_ActividadPractica_AppMovil_ll.ViewModels"
+             xmlns:models="clr-namespace:EscobarMatias_ActividadPractica_AppMovil_ll.Models"
              x:Class="EscobarMatias_ActividadPractica_AppMovil_ll.Views.ContactosPage"
-             Title="ContactosPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             x:DataType="vm:ContactosViewModel"
+             x:Name="PaginaContactos"
+             Title="Agenda de Contactos">
+
+    <Grid RowDefinitions="Auto,Auto,*"
+          Padding="16"
+          RowSpacing="12">
+
+        <!-- SearchBar: al presionar la lupa/Enter dispara BuscarCommand -->
+        <SearchBar Grid.Row="0"
+                   Placeholder="Buscar por nombre..."
+                   Text="{Binding TextoBusqueda}"
+                   SearchCommand="{Binding BuscarCommand}" />
+
+        <!-- Abre el modal en modo "Agregar" -->
+        <Button Grid.Row="1"
+                Text="+ Agregar contacto"
+                Command="{Binding AgregarContactoCommand}" />
+
+        <!--
+            La lista principal NUNCA se recarga "a mano" al abrir el modal:
+            el RefreshView + CollectionView siguen mostrando los últimos datos
+            leídos, y se refrescan solos cuando esta página vuelve a aparecer
+            que es cuando el usuario cierra el modal de Agregar/Editar.
+        -->
+        <RefreshView Grid.Row="2"
+                     IsRefreshing="{Binding EstaCargando}"
+                     Command="{Binding CargarContactosCommand}">
+
+            <CollectionView ItemsSource="{Binding Contactos}"
+                             SelectionMode="None">
+
+                <CollectionView.EmptyView>
+                    <Label Text="No hay contactos para mostrar."
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           TextColor="Gray" />
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Contacto">
+                        <Grid Padding="8"
+                              ColumnDefinitions="*,Auto,Auto"
+                              ColumnSpacing="4">
+
+                            <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                <Label Text="{Binding Nombre}" FontAttributes="Bold" FontSize="16" />
+                                <Label Text="{Binding Telefono}" FontSize="14" TextColor="Gray" />
+                                <Label Text="{Binding Email}" FontSize="14" TextColor="Gray" />
+                            </VerticalStackLayout>
+
+                            <!--
+                                Estos dos botones están DENTRO del DataTemplate,
+                                por lo que su BindingContext es el Contacto de la fila 
+                            -->
+                            <Button Grid.Column="1"
+                                    Text="✏️"
+                                    BackgroundColor="Transparent"
+                                    Command="{Binding Source={x:Reference PaginaContactos}, Path=BindingContext.EditarContactoCommand}"
+                                    CommandParameter="{Binding .}" />
+
+                            <Button Grid.Column="2"
+                                    Text="🗑️"
+                                    BackgroundColor="Transparent"
+                                    Command="{Binding Source={x:Reference PaginaContactos}, Path=BindingContext.EliminarContactoCommand}"
+                                    CommandParameter="{Binding .}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
 </ContentPage>

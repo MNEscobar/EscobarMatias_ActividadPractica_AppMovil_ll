@@ -1,9 +1,16 @@
-namespace EscobarMatias_ActividadPractica_AppMovil_ll.Views;
+using EscobarMatias_ActividadPractica_AppMovil_ll.ViewModels;
 
-public partial class ContactoModalPage : ContentView
+namespace EscobarMatias_ActividadPractica_AppMovil_ll.Views
 {
-	public ContactoModalPage()
-	{
-		InitializeComponent();
-	}
+    // Debe ser partial para coincidir con la declaración generada por XAML.
+    public partial class ContactoModalPage : ContentPage
+    {
+        // Igual que ContactosPage, el ViewModel llega inyectado desde el
+        // contenedor de DI armado en MauiProgram.cs.
+        public ContactoModalPage(ContactoDetalleViewModel viewModel)
+        {
+            InitializeComponent();
+            BindingContext = viewModel;
+        }
+    }
 }
