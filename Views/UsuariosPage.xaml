@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:EscobarMatias_ActividadPractica_AppMovil_ll.ViewModels"
+             xmlns:api="clr-namespace:EscobarMatias_ActividadPractica_AppMovil_ll.Models.Api"
+             x:Class="EscobarMatias_ActividadPractica_AppMovil_ll.Views.UsuariosPage"
+             x:DataType="vm:UsuariosViewModel"
+             Title="Usuarios API">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*"
+          Padding="16"
+          RowSpacing="12">
+
+        <!-- Dispara la carga desde la API. Se deshabilita solo mientras hay una carga en curso
+             (el CanExecute del comando depende de EstaCargando). -->
+        <Button Grid.Row="0"
+                Text="Cargar usuarios"
+                Command="{Binding CargarUsuariosCommand}" />
+
+        <!-- Label de estado: muestra el progreso, el éxito o el error de la última carga.
+             Los DataTrigger la pintan en gris (normal) o en rojo (HayError = true). -->
+        <Label Grid.Row="1"
+               Text="{Binding MensajeEstado}"
+               HorizontalTextAlignment="Center">
+            <Label.Triggers>
+                <DataTrigger TargetType="Label"
+                             Binding="{Binding HayError}"
+                             Value="False">
+                    <Setter Property="TextColor" Value="{StaticResource ColorTextoSecundario}" />
+                </DataTrigger>
+                <DataTrigger TargetType="Label"
+                             Binding="{Binding HayError}"
+                             Value="True">
+                    <Setter Property="TextColor" Value="{StaticResource ColorError}" />
+                </DataTrigger>
+            </Label.Triggers>
+        </Label>
+
+        <ActivityIndicator Grid.Row="2"
+                           IsRunning="{Binding EstaCargando}"
+                           IsVisible="{Binding EstaCargando}" />
+
+        <CollectionView Grid.Row="3"
+                        ItemsSource="{Binding Usuarios}"
+                        SelectionMode="None">
+
+            <CollectionView.EmptyView>
+                <Label Text="No hay usuarios para mostrar."
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       TextColor="{StaticResource ColorTextoSecundario}" />
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="api:UsuarioApi">
+                    <Border Padding="12"
+                            Margin="0,4"
+                            StrokeShape="RoundRectangle 8"
+                            Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}">
+
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="{Binding Nombre}" FontAttributes="Bold" FontSize="16" />
+                            <Label Text="{Binding Email}" FontSize="14" TextColor="{StaticResource ColorTextoSecundario}" />
+                            <Label Text="{Binding Empresa.Nombre}" FontSize="12" TextColor="{StaticResource ColorTextoSecundario}" />
+                        </VerticalStackLayout>
+
+                        <!-- Al tocar el ítem se ejecuta VerDetalleCommand del ViewModel de la página,
+                             enviando como parámetro el UsuarioApi de esta fila. -->
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:UsuariosViewModel}}, Path=VerDetalleCommand}"
+                                CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

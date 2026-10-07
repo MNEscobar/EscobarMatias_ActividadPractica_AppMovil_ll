@@ -10,36 +10,17 @@ using static System.Net.WebRequestMethods;
 
 namespace EscobarMatias_ActividadPractica_AppMovil_ll.Services
 {
-    public async Task<ApiResult<List<UsuarioApi>>> ObtenerUsuariosAsync(CancellationToken ct = default)
+    // ==============================================================================================
+    // Resultado de una llamada a la API: o trae los datos (Datos) o trae el tipo de error (Error).
+    // Así el servicio nunca muestra mensajes ni lanza excepciones hacia arriba:
+    // devuelve un valor que el ViewModel puede inspeccionar con un simple "if" o "switch".
+    // ==============================================================================================
+    public record ApiResult<T>(T? Datos, TipoErrorApi Error = TipoErrorApi.Ninguno, int? CodigoHttp = null)
     {
-        if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
-            return new(null, TipoErrorApi.SinConexion);
+        public bool EsExitoso => Error == TipoErrorApi.Ninguno;
 
-        try
-        {
-            using var resp = await _http.GetAsync("users", ct);
+        public static ApiResult<T> Ok(T datos, int codigoHttp) => new(datos, TipoErrorApi.Ninguno, codigoHttp);
 
-            if (!resp.IsSuccessStatusCode)
-                return new(null, MapearEstado(resp.StatusCode), (int)resp.StatusCode);
-
-            var datos = await resp.Content.ReadFromJsonAsync<List<UsuarioApi>>(cancellationToken: ct);
-            return datos is { Count: > 0 }
-                ? new(datos, CodigoHttp: (int)resp.StatusCode)          // 200
-                : new(null, TipoErrorApi.SinDatos, (int)resp.StatusCode);
-        }
-        catch (HttpRequestException) { return new(null, TipoErrorApi.SinConexion); }
-        catch (TaskCanceledException) when (!ct.IsCancellationRequested)
-        { return new(null, TipoErrorApi.Timeout); }
-        catch (JsonException) { return new(null, TipoErrorApi.RespuestaInvalida); }
-        catch (Exception ex) { Debug.WriteLine(ex); return new(null, TipoErrorApi.Desconocido); }
+        public static ApiResult<T> Falla(TipoErrorApi error, int? codigoHttp = null) => new(default, error, codigoHttp);
     }
-
-    private static TipoErrorApi MapearEstado(HttpStatusCode c) => (int)c switch
-    {
-        400 => TipoErrorApi.SolicitudInvalida,
-        401 or 403 => TipoErrorApi.NoAutorizado,
-        404 => TipoErrorApi.NoEncontrado,
-        >= 500 => TipoErrorApi.ErrorServidor,
-        _ => TipoErrorApi.Desconocido
-    };
 }
