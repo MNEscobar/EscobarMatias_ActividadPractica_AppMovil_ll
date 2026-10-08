@@ -3,12 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using EscobarMatias_ActividadPractica_AppMovil_ll.Data;
 using EscobarMatias_ActividadPractica_AppMovil_ll.Helpers;
 using EscobarMatias_ActividadPractica_AppMovil_ll.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using EscobarMatias_ActividadPractica_AppMovil_ll.Services;
 
 namespace EscobarMatias_ActividadPractica_AppMovil_ll.ViewModels
 {
@@ -21,6 +16,7 @@ namespace EscobarMatias_ActividadPractica_AppMovil_ll.ViewModels
     public partial class ContactoDetalleViewModel : ObservableObject, IQueryAttributable
     {
         private readonly ContactoRepository _contactoRepository;
+        private readonly IDialogService _dialogService;
         private int _idContacto;
 
         [ObservableProperty]
@@ -44,9 +40,10 @@ namespace EscobarMatias_ActividadPractica_AppMovil_ll.ViewModels
         [ObservableProperty]
         private string tituloPagina = "Nuevo contacto";
 
-        public ContactoDetalleViewModel(ContactoRepository contactoRepository)
+        public ContactoDetalleViewModel(ContactoRepository contactoRepository, IDialogService dialogService)
         {
             _contactoRepository = contactoRepository;
+            _dialogService = dialogService;
         }
 
         // Se llama a este método automáticamente apenas se navega a esta página
@@ -91,12 +88,12 @@ namespace EscobarMatias_ActividadPractica_AppMovil_ll.ViewModels
                 if (operacionExitosa)
                     await CerrarModalAsync();
                 else
-                    await Shell.Current.DisplayAlert("Error", "No se pudo guardar el contacto.", "OK");
+                    await _dialogService.MostrarAlertaAsync("Error", "No se pudo guardar el contacto.");
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[ContactoDetalleViewModel] {ex}");
-                await Shell.Current.DisplayAlert("Error", "Ocurrió un error al guardar el contacto.", "OK");
+                await _dialogService.MostrarAlertaAsync("Error", "Ocurrió un error al guardar el contacto.");
             }
         }
 

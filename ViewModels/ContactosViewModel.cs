@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EscobarMatias_ActividadPractica_AppMovil_ll.Models;
-using EscobarMatias_ActividadPractica_AppMovil_ll.Data;
-using EscobarMatias_ActividadPractica_AppMovil_ll.Views;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using EscobarMatias_ActividadPractica_AppMovil_ll.Data;
+using EscobarMatias_ActividadPractica_AppMovil_ll.Models;
+using EscobarMatias_ActividadPractica_AppMovil_ll.Services;
+using EscobarMatias_ActividadPractica_AppMovil_ll.Views;
 
 namespace EscobarMatias_ActividadPractica_AppMovil_ll.ViewModels
 {
@@ -17,11 +13,14 @@ namespace EscobarMatias_ActividadPractica_AppMovil_ll.ViewModels
     // No conoce SQLite ni ninguna clase de "SQLite.*": toda la persistencia
     // pasa por ContactoRepository, que llega inyectado por constructor
     // (el registro de la dependencia está en MauiProgram.cs).
+    // Los cuadros de diálogo se muestran mediante IDialogService, así el ViewModel
+    // no depende de Shell para comunicarse con el usuario.
     // =============================================================================
 
     public partial class ContactosViewModel : ObservableObject
     {
         private readonly ContactoRepository _contactoRepository;
+        private readonly IDialogService _dialogService;
         public ObservableCollection<Contacto> Contactos { get; } = new();
 
         [ObservableProperty]
@@ -30,9 +29,10 @@ namespace EscobarMatias_ActividadPractica_AppMovil_ll.ViewModels
         [ObservableProperty]
         private bool estaCargando;
 
-        public ContactosViewModel(ContactoRepository contactoRepository)
+        public ContactosViewModel(ContactoRepository contactoRepository, IDialogService dialogService)
         {
             _contactoRepository = contactoRepository;
+            _dialogService = dialogService;
         }
 
         [RelayCommand]
@@ -121,7 +121,7 @@ namespace EscobarMatias_ActividadPractica_AppMovil_ll.ViewModels
 
             try
             {
-                bool confirmar = await Shell.Current.DisplayAlert(
+                bool confirmar = await _dialogService.ConfirmarAsync(
                     "Eliminar contacto",
                     $"¿Seguro que querés eliminar a {contacto.Nombre}?",
                     "Eliminar",
@@ -135,7 +135,7 @@ namespace EscobarMatias_ActividadPractica_AppMovil_ll.ViewModels
                 if (eliminado)
                     await CargarContactosAsync();
                 else
-                    await Shell.Current.DisplayAlert("Aviso", "No se pudo eliminar el contacto.", "OK");
+                    await _dialogService.MostrarAlertaAsync("Aviso", "No se pudo eliminar el contacto.");
             }
             catch (Exception ex)
             {
@@ -143,13 +143,10 @@ namespace EscobarMatias_ActividadPractica_AppMovil_ll.ViewModels
             }
         }
 
-        private static async Task MostrarErrorAsync(string mensajeUsuario, Exception ex)
+        private async Task MostrarErrorAsync(string mensajeUsuario, Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"[ContactosViewModel] {ex}");
-
-            if (Shell.Current is not null)
-                await Shell.Current.DisplayAlert("Error", mensajeUsuario, "OK");
+            await _dialogService.MostrarAlertaAsync("Error", mensajeUsuario);
         }
-
     }
 }
