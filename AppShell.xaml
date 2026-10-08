@@ -6,12 +6,19 @@
        Title="Agenda de Contactos">
 
     <!--
-        ContactosPage es la única pantalla declarada acá como ShellContent:
-        es la que se ve al abrir la app. ContactoModalPage a propósito NO se declara acá
-        y solo se alcanza navegando con Shell.Current.GoToAsync desde el ViewModel.
+        Las dos pantallas principales se muestran como pestañas (TabBar).
+        ContactoModalPage y UsuarioApiDetallePage a propósito NO se declaran acá:
+        solo se alcanzan navegando con Shell.Current.GoToAsync desde un ViewModel
+        (sus rutas se registran en AppShell.xaml.cs).
     -->
-    <ShellContent Title="Contactos"
-                  ContentTemplate="{DataTemplate views:ContactosPage}"
-                  Route="ContactosPage" />
+    <TabBar>
+        <ShellContent Title="Contactos"
+                      ContentTemplate="{DataTemplate views:ContactosPage}"
+                      Route="ContactosPage" />
+
+        <ShellContent Title="Usuarios API"
+                      ContentTemplate="{DataTemplate views:UsuariosPage}"
+                      Route="UsuariosPage" />
+    </TabBar>
 
 </Shell>

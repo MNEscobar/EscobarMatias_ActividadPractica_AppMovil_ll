@@ -8,7 +8,9 @@ namespace EscobarMatias_ActividadPractica_AppMovil_ll
         {
             InitializeComponent();
 
+            // Rutas de las pantallas que no están en el TabBar y se abren con GoToAsync.
             Routing.RegisterRoute(nameof(ContactoModalPage), typeof(ContactoModalPage));
+            Routing.RegisterRoute(nameof(UsuarioApiDetallePage), typeof(UsuarioApiDetallePage));
         }
     }
 }
