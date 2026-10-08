@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
+
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:EscobarMatias_ActividadPractica_AppMovil_ll.ViewModels"
@@ -9,13 +10,17 @@
              Title="Agenda de Contactos">
 
     <Grid RowDefinitions="Auto,Auto,*"
+
           Padding="16"
           RowSpacing="12">
 
         <!-- SearchBar: al presionar la lupa/Enter dispara BuscarCommand -->
         <SearchBar Grid.Row="0"
+
                    Placeholder="Buscar por nombre..."
+
                    Text="{Binding TextoBusqueda}"
+
                    SearchCommand="{Binding BuscarCommand}" />
 
         <!-- Abre el modal en modo "Agregar" -->
@@ -29,6 +34,7 @@
             leídos, y se refrescan solos cuando esta página vuelve a aparecer
             que es cuando el usuario cierra el modal de Agregar/Editar.
         -->
+
         <RefreshView Grid.Row="2"
                      IsRefreshing="{Binding EstaCargando}"
                      Command="{Binding CargarContactosCommand}">
@@ -38,39 +44,43 @@
 
                 <CollectionView.EmptyView>
                     <Label Text="No hay contactos para mostrar."
+
                            HorizontalOptions="Center"
                            VerticalOptions="Center"
-                           TextColor="Gray" />
+                           TextColor="{StaticResource ColorTextoSecundario}" />
+
                 </CollectionView.EmptyView>
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Contacto">
+
                         <Grid Padding="8"
                               ColumnDefinitions="*,Auto,Auto"
                               ColumnSpacing="4">
 
                             <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
                                 <Label Text="{Binding Nombre}" FontAttributes="Bold" FontSize="16" />
-                                <Label Text="{Binding Telefono}" FontSize="14" TextColor="Gray" />
-                                <Label Text="{Binding Email}" FontSize="14" TextColor="Gray" />
+                                <Label Text="{Binding Telefono}" FontSize="14" TextColor="{StaticResource ColorTextoSecundario}" />
+                                <Label Text="{Binding Email}" FontSize="14" TextColor="{StaticResource ColorTextoSecundario}" />
                             </VerticalStackLayout>
 
                             <!--
                                 Estos dos botones están DENTRO del DataTemplate,
                                 por lo que su BindingContext es el Contacto de la fila 
                             -->
+
                             <Button Grid.Column="1"
                                     Text="✏️"
                                     BackgroundColor="Transparent"
                                     Command="{Binding Source={x:Reference PaginaContactos}, Path=BindingContext.EditarContactoCommand}"
                                     CommandParameter="{Binding .}" />
-
                             <Button Grid.Column="2"
                                     Text="🗑️"
                                     BackgroundColor="Transparent"
                                     Command="{Binding Source={x:Reference PaginaContactos}, Path=BindingContext.EliminarContactoCommand}"
                                     CommandParameter="{Binding .}" />
                         </Grid>
+
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>

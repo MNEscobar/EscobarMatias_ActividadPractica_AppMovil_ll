@@ -26,7 +26,9 @@
             <Entry Placeholder="Ej: Juan Pérez"
                    Text="{Binding Nombre}" />
             <Label Text="{Binding ErrorNombre}"
-                   TextColor="Red"
+
+                   TextColor="{StaticResource ColorError}"
+
                    FontSize="12"
                    IsVisible="{Binding ErrorNombre, Converter={StaticResource StringToBoolConverter}}" />
 
@@ -35,7 +37,8 @@
                    Text="{Binding Telefono}"
                    Keyboard="Telephone" />
             <Label Text="{Binding ErrorTelefono}"
-                   TextColor="Red"
+
+                   TextColor="{StaticResource ColorError}"
                    FontSize="12"
                    IsVisible="{Binding ErrorTelefono, Converter={StaticResource StringToBoolConverter}}" />
 
@@ -44,13 +47,14 @@
                    Text="{Binding Email}"
                    Keyboard="Email" />
             <Label Text="{Binding ErrorEmail}"
-                   TextColor="Red"
+
+                   TextColor="{StaticResource ColorError}"
                    FontSize="12"
                    IsVisible="{Binding ErrorEmail, Converter={StaticResource StringToBoolConverter}}" />
 
             <HorizontalStackLayout Spacing="12" Margin="0,24,0,0">
                 <Button Text="Guardar" Command="{Binding GuardarCommand}" />
-                <Button Text="Cancelar" Command="{Binding CancelarCommand}" BackgroundColor="Gray" />
+                <Button Text="Cancelar" Command="{Binding CancelarCommand}" BackgroundColor="{StaticResource ColorBotonSecundario}" />
             </HorizontalStackLayout>
 
         </VerticalStackLayout>

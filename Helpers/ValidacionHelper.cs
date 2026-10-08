@@ -1,33 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace EscobarMatias_ActividadPractica_AppMovil_ll.Helpers
 {
     // Métodos de validación puros: reciben datos simples (strings) y
     // devuelven un resultado, sin depender de otro servicio.
-    // Esto los hace fáciles de reutilizar desde cualquier ViewModel.
-
-    public class ValidacionHelper
+    // Por eso la clase es estática y se reutiliza desde cualquier ViewModel.
+    public static class ValidacionHelper
     {
-        // Verifica que el email tenga un formato válido (no necesariamente que exista).
-        // Verifica que los campos nombre y teléfono no estén vacíos o sean solo espacios en blanco.
+        // Patrón simple de email: algo@dominio.ext (sin espacios ni dobles arrobas).
+        private static readonly Regex PatronEmail = new(
+            @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+            RegexOptions.Compiled);
 
-        private static readonly Regex regex = new(
-                    @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
-                    RegexOptions.Compiled);
-        private static readonly Regex PatronEmail = regex;
+        // Verifica que el nombre no esté vacío ni sea solo espacios en blanco.
         public static bool EsNombreValido(string? nombre)
         {
             return !string.IsNullOrWhiteSpace(nombre);
         }
+
+        // Verifica que el teléfono no esté vacío ni sea solo espacios en blanco.
         public static bool EsTelefonoValido(string? telefono)
         {
             return !string.IsNullOrWhiteSpace(telefono);
         }
+
+        // Verifica que el email tenga un formato válido (no necesariamente que exista).
         public static bool EsEmailValido(string? email)
         {
             if (string.IsNullOrWhiteSpace(email))
