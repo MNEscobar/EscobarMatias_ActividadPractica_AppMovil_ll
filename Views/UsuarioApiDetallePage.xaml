@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:EscobarMatias_ActividadPractica_AppMovil_ll.ViewModels"
+             x:Class="EscobarMatias_ActividadPractica_AppMovil_ll.Views.UsuarioApiDetallePage"
+             x:DataType="vm:UsuarioApiDetalleViewModel"
+             Title="Detalle de usuario">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="4">
+
+            <!-- Los datos llegan por navegación (IQueryAttributable) y se muestran con Data Binding.
+                 Se muestran propiedades directas y de objetos anidados (Empresa, Direccion). -->
+            <Label Text="{Binding Usuario.Nombre}"
+                   FontSize="24"
+                   FontAttributes="Bold" />
+            <Label Text="{Binding Usuario.NombreUsuario, StringFormat='@{0}'}"
+                   TextColor="{StaticResource ColorTextoSecundario}" />
+
+            <Label Text="Email" FontAttributes="Bold" Margin="0,20,0,0" />
+            <Label Text="{Binding Usuario.Email}" />
+
+            <Label Text="Teléfono" FontAttributes="Bold" Margin="0,12,0,0" />
+            <Label Text="{Binding Usuario.Telefono}" />
+
+            <Label Text="Sitio web" FontAttributes="Bold" Margin="0,12,0,0" />
+            <Label Text="{Binding Usuario.SitioWeb}" />
+
+            <Label Text="Empresa" FontAttributes="Bold" Margin="0,12,0,0" />
+            <Label Text="{Binding Usuario.Empresa.Nombre}" />
+
+            <Label Text="Ciudad" FontAttributes="Bold" Margin="0,12,0,0" />
+            <Label Text="{Binding Usuario.Direccion.Ciudad}" />
+
+            <Label Text="Calle" FontAttributes="Bold" Margin="0,12,0,0" />
+            <Label Text="{Binding Usuario.Direccion.Calle}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
